@@ -1,0 +1,12 @@
+{
+  "name": "GestaoAPP",
+  "displayName": "GestaoAPP",
+  "expo": {
+    "name": "GestaoAPP",
+    "slug": "GestaoAPP",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}

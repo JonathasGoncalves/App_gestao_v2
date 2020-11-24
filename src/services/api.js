@@ -1,11 +1,30 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import erroMessage from './../functions/errorMessage';
 
 const api = axios.create({
   baseURL: 'http://192.168.10.26:8000/',
   timeout: 10000,
   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
 });
+
+//modelo do objeto de erro
+/*
+{
+ "errors":{
+    "placa":[
+       "A placa mtc não existe.",
+       "The placa must be 10.",
+       "The placa must be an integer."
+    ],
+    "input2":[
+       "A placa mtc não existe.",
+       "The placa must be 10.",
+       "The placa must be an integer."
+    ]
+ },
+ "message":"The given data was invalid."
+}*/
 
 //ADICIONANDO TOKEN AS REQUISIÇÕES
 api.interceptors.request.use(
@@ -41,7 +60,7 @@ api.interceptors.response.use(async function (response) {
   errorMsg = {};
   errorJson = error.toJSON();
   const access_token = await AsyncStorage.getItem('@access_token');
-  if (errorJson.code == 'ECONNABORTED' || errorJson.code == '408') {
+  if (errorJson.code == 'ECONNABORTED') {
     //TIMEOUT ERROR
     errorMsg = {
       title: 'Tempo excedido!',
@@ -50,7 +69,7 @@ api.interceptors.response.use(async function (response) {
       cancel: '',
       identificado: true
     }
-  } else if (errorJson.code == undefined && access_token) {
+  } else if (error.response.status == '400' && access_token) {
     //TOKEN EXPIRADO
     errorMsg = {
       title: 'Não Autorizado!',
@@ -59,7 +78,7 @@ api.interceptors.response.use(async function (response) {
       cancel: '',
       identificado: false
     }
-  } else if (errorJson.code == undefined) {
+  } else if (error.response.status == '400') {
     //CLIENTE DO PASSWORD LARAVEL NÃO IDENTIFICADO, CREDENCIAL INVÁLIDA
     errorMsg = {
       title: 'Não Autorizado!',
@@ -68,15 +87,37 @@ api.interceptors.response.use(async function (response) {
       cancel: '',
       identificado: false
     }
-  } else {
-    //ERRO DESCONHECIDO
-    console.log(errorJson);
+  } else if (error.response.status == '500') {
     errorMsg = {
       title: 'Erro!',
-      msg: 'Erro desconhecido!',
+      msg: 'Erro interno na aplicação. Por favor contatar a TI.',
       confirm: 'Continuar',
       cancel: '',
       identificado: false
+    }
+  } else {
+    console.log('else erro');
+    console.log(errorJson);
+    //ERRO DESCONHECIDO OU ERRO NA VALIDAÇÃO DO REQUEST
+    try {
+      //SE DER CERTO, O ERRO FOI NA VALIDAÇÃO DO REQUEST
+      msgError = erroMessage(error);
+      errorMsg = {
+        title: 'Erro!',
+        msg: msgError,
+        confirm: 'Continuar',
+        cancel: '',
+        identificado: false
+      }
+    } catch (errorValidacao) {
+      //SE DER ERRADO É UM ERRO INTERNO DESCONHECIDO
+      errorMsg = {
+        title: 'Erro!',
+        msg: 'Erro desconhecido!',
+        confirm: 'Continuar',
+        cancel: '',
+        identificado: false
+      }
     }
   }
   return Promise.reject(errorMsg);

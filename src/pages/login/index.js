@@ -15,7 +15,7 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import * as Updates from 'expo-updates';
 import NetInfo from "@react-native-community/netinfo";
 
-const Login = ({ save_tecnico, identificado }) => {
+const Login = ({ save_tecnico }) => {
 
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
@@ -23,7 +23,6 @@ const Login = ({ save_tecnico, identificado }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [alertProps, setAlertProps] = useState({});
   const [showCancel, setShowCancel] = useState(false);
-  const [updateController, setUpdateController] = useState(true);
   const [isConnected, setIsConnected] = useState(true);
 
 
@@ -44,10 +43,10 @@ const Login = ({ save_tecnico, identificado }) => {
         const update = await Updates.checkForUpdateAsync();
         if (update.isAvailable) {
           await Updates.fetchUpdateAsync();
-          setUpdateController(false);
+          setLoading(false);
           await Updates.reloadAsync();
         } else {
-          setUpdateController(false);
+          setLoading(false);
         }
       } catch (e) {
         if (!isConnected) {
@@ -55,8 +54,7 @@ const Login = ({ save_tecnico, identificado }) => {
             title: 'Sem internet!',
             msg: 'Não é possivel verificar atualizações sem internet. Conecte-se e reinicie o APP!',
             confirm: 'Continuar',
-            cancel: '',
-            identificado: identificado
+            cancel: ''
           }
           setAlertProps(errorMsg);
           setLoading(false);
@@ -67,14 +65,13 @@ const Login = ({ save_tecnico, identificado }) => {
             title: 'Erro ao atualizar o APP!',
             msg: `Erro ${e}`,
             confirm: 'Continuar',
-            cancel: '',
-            identificado: identificado
+            cancel: ''
           }
           setAlertProps(errorMsg);
           setLoading(false);
           setShowAlert(true);
         }
-        setUpdateController(false);
+        setLoading(false);
       }
     }
     updateAPP();

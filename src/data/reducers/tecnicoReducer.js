@@ -9,7 +9,6 @@ const INITIAL_STATE = {
 export default function Tecnico(state = INITIAL_STATE, action) {
   switch (action.type) {
     case 'SAVE_TECNICO':
-      console.log('SAVE_TECNICO');
       return {
         ...state,
         nome: action.nome,
@@ -18,7 +17,6 @@ export default function Tecnico(state = INITIAL_STATE, action) {
         identificado: action.identificado
       }
     case 'CLEAR_TECNICO':
-      console.log('CLEAR_TECNICO');
       return {
         ...state,
         nome: action.nome,

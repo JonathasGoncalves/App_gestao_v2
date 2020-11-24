@@ -2,16 +2,17 @@ import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Agenda from './../pages/agenda/index';
 
-const CreateMainDrawer = createDrawerNavigator();
+import { createStackNavigator } from '@react-navigation/stack';
 
-function MainDrawer() {
+const CreateMainStack = createStackNavigator();
+function AgendaIndex() {
   return (
-    <CreateMainDrawer.Navigator>
-      <CreateMainDrawer.Screen
-        name="index"
+    <CreateMainStack.Navigator>
+      <CreateMainStack.Screen
+        name="Agenda"
         component={Agenda}
         options={{
-          title: 'Cadastro',
+          title: 'Agenda',
           headerStyle: {
             backgroundColor: '#00BFFF',
           },
@@ -22,6 +23,30 @@ function MainDrawer() {
           },
         }}
       />
+    </CreateMainStack.Navigator>
+  );
+}
+
+const CreateMainDrawer = createDrawerNavigator();
+function MainDrawer() {
+  return (
+    <CreateMainDrawer.Navigator initialRouteName="Index">
+      <CreateMainDrawer.Screen
+        name="Index"
+        component={AgendaIndex}
+        options={{
+          title: 'Agenda',
+          headerStyle: {
+            backgroundColor: '#00BFFF',
+          },
+          headerTitleAlign: "center",
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+
     </CreateMainDrawer.Navigator>
   );
 }

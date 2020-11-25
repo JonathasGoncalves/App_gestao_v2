@@ -9,14 +9,14 @@ import { Provider } from 'react-redux';
 import store from './data/data';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import { faCheckSquare, faCoffee, faBars, faArrowLeft, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCheckSquare, faCoffee, faBars, faArrowLeft, faTrash, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 export default function App() {
 
   useEffect(() => {
     //adicionando icones globalmente
     try {
-      library.add(fab, faCheckSquare, faCoffee, faBars, faArrowLeft, faTrash);
+      library.add(fab, faCheckSquare, faCoffee, faBars, faArrowLeft, faTrash, faSignOutAlt);
     } catch (error) {
       console.log(error);
     }

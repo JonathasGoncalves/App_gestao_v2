@@ -20,11 +20,14 @@ function IndexRouter({ identificado, save_tecnico, clear_tecnico }) {
       const access_token = await AsyncStorage.getItem('@access_token');
       try {
         if (access_token) {
+          console.log('TOKEN ENCONTRADO');
+          console.log(access_token);
           //RECUPERANDO USUÁRIO LOGADO E SALVANDO DO REDUX e ASYNCSTORAGE
           const responseTecnico = await api.get('api/tecnico/logged_tecnico');
           save_tecnico(responseTecnico.name, responseTecnico.email, responseTecnico.id);
         }
       } catch (error) {
+        console.log('TOKEN INVÁLIDO');
         //TOKEN INVÁLIDO
         //LIMPAR CREDENCIAIS
         await AsyncStorage.removeItem('@access_token');

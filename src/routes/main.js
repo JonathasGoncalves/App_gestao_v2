@@ -1,6 +1,6 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import Agenda from './../pages/agenda/index';
+import AgendaScreen from './../pages/agenda/index';
 
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -10,7 +10,7 @@ function AgendaIndex() {
     <CreateMainStack.Navigator>
       <CreateMainStack.Screen
         name="Agenda"
-        component={Agenda}
+        component={AgendaScreen}
         options={{
           title: 'Agenda',
           headerStyle: {

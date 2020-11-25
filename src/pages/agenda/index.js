@@ -123,16 +123,9 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
   }
 
 
-
-
   return (
-    <View>
-      <View style={{ flex: 1 }}>
-        <Agenda />
-      </ View>
-
-
-
+    <View style={{ flex: 1 }}>
+      <Agenda />
     </View>
   );
 }

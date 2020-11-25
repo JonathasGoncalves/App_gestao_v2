@@ -3,10 +3,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import erroMessage from './../functions/errorMessage';
 
 const api = axios.create({
-  baseURL: 'http://192.168.10.26:8000/',
+  baseURL: 'http://192.168.15.5:8000/',
   timeout: 10000,
   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
 });
+
+/*
+Test casa
+Client ID: 1
+Client secret: 0WdYjEZQGHR0K172HKPx5TJxYx0mzbD1QeDyeysK
+*/
 
 //modelo do objeto de erro
 /*
@@ -48,7 +54,7 @@ api.interceptors.response.use(async function (response) {
       grant_type: 'refresh_token',
       refresh_token: refresh_token,
       client_id: '1',
-      client_secret: 'gH1A7MRMm6pF5WHjT4LoqShppVGfwwsvjuivzNNe',
+      client_secret: '0WdYjEZQGHR0K172HKPx5TJxYx0mzbD1QeDyeysK',
       scope: ''
     })
     await AsyncStorage.setItem('@access_token', responseToken.data.access_token);

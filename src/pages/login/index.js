@@ -86,7 +86,7 @@ const Login = ({ save_tecnico }) => {
       const responseToken = await api.post('oauth/token', {
         grant_type: 'password',
         client_id: '1',
-        client_secret: 'gH1A7MRMm6pF5WHjT4LoqShppVGfwwsvjuivzNNe',
+        client_secret: '0WdYjEZQGHR0K172HKPx5TJxYx0mzbD1QeDyeysK',
         username: userName,
         password: password,
       })
@@ -97,6 +97,7 @@ const Login = ({ save_tecnico }) => {
       const responseTecnico = await api.get('api/tecnico/logged_tecnico');
       save_tecnico(responseTecnico.name, responseTecnico.email, responseTecnico.id);
     } catch (error) {
+      console.log(error);
       setShowCancel(error.cancel);
       setAlertProps(error);
       setLoading(false);

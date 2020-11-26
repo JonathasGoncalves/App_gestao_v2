@@ -122,7 +122,6 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
     return date.toISOString().split('T')[0];
   }
 
-
   return (
     <View style={{ flex: 1 }}>
       <Agenda />

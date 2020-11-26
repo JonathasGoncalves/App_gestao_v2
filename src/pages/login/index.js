@@ -83,10 +83,13 @@ const Login = ({ save_tecnico }) => {
     setLoading(true);
     //RECEBENDO O TOKEN DE AUTENTICAÇÃO E SALVANDO NO STORAGE
     try {
+      const client_secret = await AsyncStorage.getItem('@client_secret');
+      const client_id = await AsyncStorage.getItem('@client_id');
+
       const responseToken = await api.post('oauth/token', {
         grant_type: 'password',
-        client_id: '1',
-        client_secret: '0WdYjEZQGHR0K172HKPx5TJxYx0mzbD1QeDyeysK',
+        client_id: client_id,
+        client_secret: client_secret,
         username: userName,
         password: password,
       })

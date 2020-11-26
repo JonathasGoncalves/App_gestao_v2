@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import erroMessage from './../functions/errorMessage';
 
 const api = axios.create({
-  baseURL: 'http://192.168.15.5:8000/',
+  baseURL: 'http://192.168.10.26:8000/',
   timeout: 10000,
   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
 });
@@ -50,11 +50,14 @@ api.interceptors.response.use(async function (response) {
   //REFRESH DO TOKEN
   if (response.config.url != 'oauth/token') {
     const refresh_token = await AsyncStorage.getItem('@refresh_token');
+    const client_secret = await AsyncStorage.getItem('@client_secret');
+    const client_id = await AsyncStorage.getItem('@client_id');
+
     const responseToken = await api.post('oauth/token', {
       grant_type: 'refresh_token',
       refresh_token: refresh_token,
-      client_id: '1',
-      client_secret: '0WdYjEZQGHR0K172HKPx5TJxYx0mzbD1QeDyeysK',
+      client_id: client_id,
+      client_secret: client_secret,
       scope: ''
     })
     await AsyncStorage.setItem('@access_token', responseToken.data.access_token);

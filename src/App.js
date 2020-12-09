@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import store from './data/data';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import { faCheckSquare, faCoffee, faBars, faArrowLeft, faTrash, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCheckSquare, faCoffee, faBars, faArrowLeft, faTrash, faUser, faSignOutAlt, faCalendar } from '@fortawesome/free-solid-svg-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
@@ -18,7 +18,7 @@ export default function App() {
 
     //adicionando client_secret
     async function secret_laravel() {
-      await AsyncStorage.setItem('@client_secret', 'gH1A7MRMm6pF5WHjT4LoqShppVGfwwsvjuivzNNe');
+      await AsyncStorage.setItem('@client_secret', 'xOZgN1Dcgjmmi7SyH6JaJNi6gaYfMHE65youl0r5');
       await AsyncStorage.setItem('@client_id', '1');
     }
     //adicionando icones globalmente
@@ -33,9 +33,16 @@ export default function App() {
 
   }, [])
 
+  const MyTheme = {
+    colors: {
+      primary: 'white',
+      background: 'white'
+    },
+  };
+
   return (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer theme={MyTheme}>
         <IndexRouter />
         <StatusBar style="auto" />
       </NavigationContainer >

@@ -47,7 +47,7 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
         <Button
           buttonStyle={{ borderWidth: 0, bordercolor: 'white', backgroundColor: '#00BFFF', marginRight: 10 }}
           icon={<FontAwesomeIcon icon="sign-out-alt" color="white" size={25} />}
-          onPress={() => navigation.toggleDrawer()}
+          onPress={() => logout()}
         />
       ),
     });

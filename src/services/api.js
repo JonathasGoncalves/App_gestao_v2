@@ -65,6 +65,7 @@ api.interceptors.response.use(async function (response) {
   }
   return response;
 }, async function (error) {
+  console.log(error.response.status);
   //OBJ COM A RESPORTA PERSONALIZADA
   errorMsg = {};
   errorJson = error.toJSON();

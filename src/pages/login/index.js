@@ -93,6 +93,8 @@ const Login = ({ save_tecnico }) => {
         username: userName,
         password: password,
       })
+      console.log('responseToken');
+      console.log(responseToken.data);
       await AsyncStorage.setItem('@access_token', responseToken.data.access_token);
       await AsyncStorage.setItem('@refresh_token', responseToken.data.refresh_token);
 

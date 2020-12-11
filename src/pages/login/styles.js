@@ -1,5 +1,6 @@
 import { Dimensions, StyleSheet, PixelRatio } from 'react-native';
 
+
 const styles = StyleSheet.create({
   containerButtonPadrao: {
     backgroundColor: '#00BFFF',

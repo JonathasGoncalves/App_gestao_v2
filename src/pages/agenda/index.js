@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Agenda } from 'react-native-calendars';
 import { LocaleConfig } from 'react-native-calendars';
+import styles from './styles';
 
 LocaleConfig.locales['br'] = {
   monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembrp', 'Dezembro'],
@@ -122,9 +123,23 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
     return date.toISOString().split('T')[0];
   }
 
+  const adicionarEvento = async () => {
+    navigation.navigate('Criar Evento');
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <Agenda />
+
+      <Button
+        type="outline"
+        onPress={adicionarEvento}
+        buttonStyle={{ borderWidth: 0, bordercolor: 'white', backgroundColor: '#00BFFF' }}
+        containerStyle={styles.containerButtonPadraoTemp}
+        icon={
+          <FontAwesomeIcon style={{ alignSelf: 'center' }} icon="plus" color="white" size={25} />
+        }
+      />
     </View>
   );
 }

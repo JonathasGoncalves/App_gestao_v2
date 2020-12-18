@@ -9,6 +9,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { date } from '../../functions/tempo';
 import styles from './styles';
 import api from '../../services/api';
+import * as MailComposer from 'expo-mail-composer';
+import * as FileSystem from 'expo-file-system';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Relatorio = ({ navigation }) => {
 
@@ -20,6 +23,7 @@ const Relatorio = ({ navigation }) => {
   const [atualizando, setAtualizando] = useState(false);
   const [filtrando, setFiltrando] = useState(true);
   const [qualidades, setQualidades] = useState([]);
+  const [donwloadFile, setDonwloadFile] = useState(0);
   const [qualidadesRender, setQualidadesRender] = useState([]);
   const [qualidadesFim, setQualidadesFim] = useState(false);
 
@@ -71,9 +75,9 @@ const Relatorio = ({ navigation }) => {
   }
 
   //COMPARTILHAR RELATORIO VIA EMAIL
-  const shareReport = () => {
+  /*const shareReport = () => {
 
-  }
+  }*/
 
   const updateQualidades = () => {
     //SE NÃO CHEGOU AO FIM DO ARRAY DE QUALIDADES, PODE ATUALIZAR
@@ -120,13 +124,13 @@ const Relatorio = ({ navigation }) => {
     );
   }
 
-  const exportExcel = () => {
+  const shareReport = async () => {
 
-    name = 'teste' + '.xlsx';
+    nome_arquivo = relCheckBox + padraoCheckBox + dataReq + '.xlsx';
 
-    const { exists } = await FileSystem.getInfoAsync(FileSystem.documentDirectory + name)
+    const { exists } = await FileSystem.getInfoAsync(FileSystem.documentDirectory + nome_arquivo)
     if (exists) {
-      await FileSystem.deleteAsync(FileSystem.documentDirectory + name);
+      await FileSystem.deleteAsync(FileSystem.documentDirectory + nome_arquivo);
     }
 
     const access_token = await AsyncStorage.getItem('@access_token');
@@ -135,20 +139,18 @@ const Relatorio = ({ navigation }) => {
       'Bearer Token': access_token
     };
 
-    const response = await api.post('/api/tanque/gerar_excel_qualidade', {
+    const response = await api.post('/api/cooperado/gerar_excel_qualidade', {
       relatorio: relCheckBox,
-      filtro: parametros[1],
+      filtro: padraoCheckBox == "No Padrão" ? '<=' : '>',
       padrao: relCheckBox == 'CBT' ? 300 : 500,
       dataReferencia: dataReq,
     });
 
     if (response.data) {
-      const dest = FileSystem.documentDirectory + name;
+      const dest = FileSystem.documentDirectory + nome_arquivo;
       const callback = downloadProgress => {
         const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
-        this.setState({
-          downloadProgress: progress,
-        });
+        setDonwloadFile(progress);
       };
 
       const downloadResumable = FileSystem.createDownloadResumable(
@@ -163,7 +165,7 @@ const Relatorio = ({ navigation }) => {
         MailComposer.composeAsync({
           recipient: "",
           subject: "Relatório de Qualidade",
-          body: "Segue relatório referênte a " + 'temp',
+          body: "Segue relatório referênte a " + relCheckBox + padraoCheckBox + dataReq,
           attachments: [dest]
         });
       } catch (e) {
@@ -217,6 +219,7 @@ const Relatorio = ({ navigation }) => {
           <View style={{ flexDirection: 'row' }}>
             <CheckBox
               disabled={loading}
+              checkedColor='#00BFFF'
               title='CBT'
               checkedIcon='dot-circle-o'
               uncheckedIcon='circle-o'
@@ -226,6 +229,7 @@ const Relatorio = ({ navigation }) => {
             />
             <CheckBox
               disabled={loading}
+              checkedColor='#00BFFF'
               title='CCS'
               checkedIcon='dot-circle-o'
               uncheckedIcon='circle-o'
@@ -237,6 +241,7 @@ const Relatorio = ({ navigation }) => {
           <View style={{ flexDirection: 'row' }}>
             <CheckBox
               disabled={loading}
+              checkedColor='#00BFFF'
               title='No Padrão'
               checkedIcon='dot-circle-o'
               uncheckedIcon='circle-o'
@@ -246,6 +251,7 @@ const Relatorio = ({ navigation }) => {
             />
             <CheckBox
               disabled={loading}
+              checkedColor='#00BFFF'
               title='Fora Do Padrão'
               checkedIcon='dot-circle-o'
               uncheckedIcon='circle-o'

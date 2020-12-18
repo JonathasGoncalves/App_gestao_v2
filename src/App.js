@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import store from './data/data';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import { faCheckSquare, faCoffee, faBars, faArrowLeft, faTrash, faUser, faSignOutAlt, faCalendar, faShareAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCheckSquare, faCoffee, faBars, faArrowLeft, faTrash, faUser, faSignOutAlt, faCalendar, faShareAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
@@ -23,7 +23,7 @@ export default function App() {
     }
     //adicionando icones globalmente
     try {
-      library.add(fab, faCheckSquare, faCoffee, faBars, faArrowLeft, faTrash, faSignOutAlt, faCalendar, faShareAlt);
+      library.add(fab, faCheckSquare, faCoffee, faBars, faArrowLeft, faTrash, faSignOutAlt, faCalendar, faShareAlt, faPlus);
     } catch (error) {
       console.log(error);
     }

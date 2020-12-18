@@ -4,6 +4,7 @@ import AgendaScreen from './../pages/agenda/index';
 import Relatorio from './../pages/relatorios/index';
 import { PixelRatio } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
+import CriarEvento from '../pages/evento/criarEvento';
 
 var FONT_SIZE_TITULOS = 20;
 var FONT_SIZE_TEXT = 18;
@@ -32,6 +33,22 @@ function AgendaIndex() {
         component={AgendaScreen}
         options={{
           title: 'Agenda',
+          headerStyle: {
+            backgroundColor: '#00BFFF',
+          },
+          headerTitleAlign: "center",
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontSize: FONT_SIZE_TEXT
+          },
+        }}
+      />
+
+      <CreateMainStack.Screen
+        name="Criar Evento"
+        component={CriarEvento}
+        options={{
+          title: 'Criar Evento',
           headerStyle: {
             backgroundColor: '#00BFFF',
           },

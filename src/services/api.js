@@ -37,6 +37,8 @@ api.interceptors.request.use(
   async function (config) {
     const access_token = await AsyncStorage.getItem('@access_token');
     if (access_token) config.headers.Authorization = `Bearer ${access_token}`;
+    console.log('request request');
+    console.log(config);
     return config;
   },
   function (error) {
@@ -48,7 +50,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(async function (response) {
 
   //REFRESH DO TOKEN
-  if (response.config.url != 'oauth/token') {
+  /*if (response.config.url != 'oauth/token') {
     const refresh_token = await AsyncStorage.getItem('@refresh_token');
     const client_secret = await AsyncStorage.getItem('@client_secret');
     const client_id = await AsyncStorage.getItem('@client_id');
@@ -62,10 +64,11 @@ api.interceptors.response.use(async function (response) {
     })
     await AsyncStorage.setItem('@access_token', responseToken.data.access_token);
     await AsyncStorage.setItem('@refresh_token', responseToken.data.refresh_token);
-  }
+  }*/
   return response;
 }, async function (error) {
-  console.log(error.response.status);
+  console.log('response response');
+  console.log(error);
   //OBJ COM A RESPORTA PERSONALIZADA
   errorMsg = {};
   errorJson = error.toJSON();
@@ -106,8 +109,8 @@ api.interceptors.response.use(async function (response) {
       identificado: false
     }
   } else {
-    console.log('else erro');
-    console.log(errorJson);
+    //console.log('else erro');
+    //console.log(errorJson);
     //ERRO DESCONHECIDO OU ERRO NA VALIDAÇÃO DO REQUEST
     try {
       //SE DER CERTO, O ERRO FOI NA VALIDAÇÃO DO REQUEST

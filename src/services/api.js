@@ -37,8 +37,6 @@ api.interceptors.request.use(
   async function (config) {
     const access_token = await AsyncStorage.getItem('@access_token');
     if (access_token) config.headers.Authorization = `Bearer ${access_token}`;
-    console.log('request request');
-    console.log(config);
     return config;
   },
   function (error) {
@@ -67,8 +65,6 @@ api.interceptors.response.use(async function (response) {
   }*/
   return response;
 }, async function (error) {
-  console.log('response response');
-  console.log(error);
   //OBJ COM A RESPORTA PERSONALIZADA
   errorMsg = {};
   errorJson = error.toJSON();

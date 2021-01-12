@@ -3,7 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import erroMessage from './../functions/errorMessage';
 
 const api = axios.create({
-  baseURL: 'http://192.168.10.26:8000/',
+  //baseURL: 'http://192.168.10.26:8000/', apigestaocooperados.selita.coop.br
+  baseURL: 'apigestaocooperados.selita.coop.br/',
   timeout: 10000,
   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
 });

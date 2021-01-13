@@ -28,6 +28,7 @@ const Relatorio = ({ navigation }) => {
   const [qualidadesFim, setQualidadesFim] = useState(false);
 
   useEffect(() => {
+    console.log(date);
     //ADICIONANDO BOTÃO DE VOLTAR
     navigation.setOptions({
       headerLeft: () => (
@@ -269,7 +270,7 @@ const Relatorio = ({ navigation }) => {
 
           {showDate &&
             <DateTimePicker
-              value={date}
+              value={data}
               mode={'datetime'}
               is24Hour={true}
               display="default"

@@ -16,10 +16,11 @@ export default function App() {
 
   useEffect(() => {
 
+    //FoHGIE8cTNGNJez3uYQdV8gbJdtYvyDBoV4cwjmQ 5 cpanel
     //adicionando client_secret
     async function secret_laravel() {
-      await AsyncStorage.setItem('@client_secret', 'xOZgN1Dcgjmmi7SyH6JaJNi6gaYfMHE65youl0r5');
-      await AsyncStorage.setItem('@client_id', '1');
+      await AsyncStorage.setItem('@client_secret', 'FoHGIE8cTNGNJez3uYQdV8gbJdtYvyDBoV4cwjmQ');
+      await AsyncStorage.setItem('@client_id', '5');
     }
     //adicionando icones globalmente
     try {

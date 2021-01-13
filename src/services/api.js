@@ -4,9 +4,9 @@ import erroMessage from './../functions/errorMessage';
 
 const api = axios.create({
   //baseURL: 'http://192.168.10.26:8000/', apigestaocooperados.selita.coop.br
-  baseURL: 'apigestaocooperados.selita.coop.br/',
+  baseURL: 'http://apigestaocooperados.selita.coop.br/',
   timeout: 10000,
-  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+  headers: { 'Content-Type': 'application/json' }
 });
 
 /*
@@ -69,6 +69,7 @@ api.interceptors.response.use(async function (response) {
   //OBJ COM A RESPORTA PERSONALIZADA
   errorMsg = {};
   errorJson = error.toJSON();
+  console.log(error.response);
   const access_token = await AsyncStorage.getItem('@access_token');
   if (errorJson.code == 'ECONNABORTED') {
     //TIMEOUT ERROR

@@ -13,13 +13,14 @@ const CriarEvento = ({ navigation }) => {
 
   const [cooperados, setCooperados] = useState([]);
   const [cooperadosTodos, setCooperadosTodos] = useState([]);
-  const [relatorios, setRelatorios] = useState([]);
-  const [relatorio, setRelatorio] = useState('');
+  const [formularios, setFormularios] = useState([]);
+  const [formulario, setFormulario] = useState('');
   const [projetos, setProjetos] = useState([]);
   const [cooperadoImput, setCooperadoImput] = useState('');
   const [loading, setLoading] = useState(true);
   const [listAtivo, setListAtivo] = useState(false);
   const [data, setData] = useState(new Date());
+  const [showDate, setShowDate] = useState(false);
   const [coopSelect, setCoopSelect] = useState({});
 
   useEffect(() => {
@@ -39,7 +40,10 @@ const CriarEvento = ({ navigation }) => {
       const responseProjetos = await api.get('api/projeto/listar_projeto_abertos');
       //TRAZER COOPERADOS
       const responseCooperados = await api.get('api/cooperado/listar_cooperados');
+      //TRAZER TIPOS DE RELATÓRIO
+      const responseFormularios = await api.get('api/evento/listar_formularios');
       setCooperados(responseCooperados.data.cooperados);
+      setFormularios(responseFormularios.data.formularios);
       setCooperadosTodos(responseCooperados.data.cooperados);
       setProjetos(responseProjetos.data.projetos);
       setLoading(false);
@@ -73,6 +77,7 @@ const CriarEvento = ({ navigation }) => {
   //ADICIONA A NOVA DATA 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || data;
+    setShowDate(false);
     setData(currentDate);
   };
 
@@ -169,26 +174,35 @@ const CriarEvento = ({ navigation }) => {
                 <FontAwesomeIcon icon="clipboard-list" color="white" size={25} />
                 <Dropdown
                   //containerStyle={{ marginLeft: scale(10), width: scale(300), height: moderateScale(50) }}
-                  label={"Teste"}
-                  value={relatorio}
+                  label={"Selecione o tipo de visita"}
+                  value={formulario}
+                  useNativeDriver={true}
                   //fontSize={moderateScale(14)}
                   //labelFontSize={moderateScale(14)}
                   //dropdownPosition={0}
                   //overlayStyle={{ marginTop: moderateScale(3) }}
-                  data={relatorios}
+                  data={formularios}
                 //itemTextStyle={{ fontSize: moderateScale(18), marginTop: 0 }}
                 //onChangeText={this.onChangeText}
                 />
               </View>
 
-              <DateTimePicker
-                value={date}
-                mode={'datetime'}
-                is24Hour={true}
-                display="default"
-                onChange={onChange}
-              />
+              <TouchableOpacity disabled={loading} onPress={() => setShowDate(true)}>
+                <View style={styles.viewCalendar}>
+                  <FontAwesomeIcon style={{ alignSelf: 'center' }} icon="calendar" color='#00BFFF' size={25} />
+                  <Text allowFontScaling={false} style={styles.textDate}>{date(data)}</Text>
+                </View>
+              </TouchableOpacity>
 
+              {showDate &&
+                <DateTimePicker
+                  value={data}
+                  mode={'datetime'}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChange}
+                />
+              }
             </View>
           )
       }

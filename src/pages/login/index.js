@@ -117,7 +117,7 @@ const Login = ({ save_tecnico }) => {
       {loading && <ActivityIndicator size='large' color='#00BFFF' style={{ marginTop: '50%', position: "absolute", alignSelf: "center" }} />}
       <Form>
         <Item floatingLabel style={{ borderWidth: 0 }}>
-          <Label style={styles.labelLogin}>Username</Label>
+          <Label style={styles.labelLogin}>Usuário</Label>
           <Input
             style={styles.inputlogin}
             value={userName}
@@ -125,7 +125,7 @@ const Login = ({ save_tecnico }) => {
           />
         </Item>
         <Item floatingLabel last>
-          <Label style={styles.labelLogin}>Password</Label>
+          <Label style={styles.labelLogin}>Senha</Label>
           <Input
             style={styles.inputlogin}
             value={password}

@@ -66,6 +66,18 @@ const styles = StyleSheet.create({
     marginLeft: MARGIN_PADRAO_LATERAL,
     marginRight: MARGIN_PADRAO_LATERAL
   },
+  viewCalendar: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    height: INPUT_HEIGHT,
+    alignSelf: 'flex-start',
+    marginLeft: MARGIN_MAIOR_LATERAL
+  },
+  textDate: {
+    marginLeft: MARGIN_PADRAO_LATERAL,
+    alignSelf: 'center',
+    fontSize: FONT_SIZE_TEXT
+  },
 });
 
 export default styles;

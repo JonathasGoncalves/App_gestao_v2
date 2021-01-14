@@ -43,6 +43,7 @@ const Relatorio = ({ navigation }) => {
 
   //ADICIONA A NOVA DATA 
   const onChange = (event, selectedDate) => {
+    console.log(selectedDate);
     const currentDate = selectedDate || data;
     setShowDate(false);
     setData(currentDate);

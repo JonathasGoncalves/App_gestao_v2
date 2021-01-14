@@ -12,6 +12,8 @@ var BUTTON_WIDTH = 200;
 var MARGIN_TOP = 30;
 var MARGIN_TOP_CARD = 20;
 var MARGIN_TOP_ITEN = 10;
+var MARGIN_ICON = 40;
+var MARGIN_TOP_MAIOR = 70;
 
 if (PixelRatio.get() <= 2) {
   FONT_SIZE_TEXT = 16;
@@ -26,6 +28,8 @@ if (PixelRatio.get() <= 2) {
   MARGIN_MAIOR_LATERAL = 18;
   MARGIN_TOP_CARD = 15;
   MARGIN_TOP_ITEN = 5;
+  MARGIN_ICON = 35;
+  MARGIN_TOP_MAIOR = 60;
 }
 
 const styles = StyleSheet.create({
@@ -68,15 +72,55 @@ const styles = StyleSheet.create({
   },
   viewCalendar: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    height: INPUT_HEIGHT,
-    alignSelf: 'flex-start',
-    marginLeft: MARGIN_MAIOR_LATERAL
+    flexDirection: 'row',
+    marginTop: MARGIN_TOP,
+    marginLeft: MARGIN_MAIOR_LATERAL,
   },
   textDate: {
-    marginLeft: MARGIN_PADRAO_LATERAL,
+    marginLeft: MARGIN_MAIOR_LATERAL,
     alignSelf: 'center',
+    fontSize: FONT_SIZE_TEXT,
+    color: 'black'
+  },
+  containerDrop: {
+    marginLeft: MARGIN_PADRAO_LATERAL,
     fontSize: FONT_SIZE_TEXT
+  },
+  containerIcon: {
+    top: 10,
+    right: '100%',
+    left: MARGIN_PADRAO_LATERAL
+  },
+  inputAndroid: {
+    marginLeft: MARGIN_PADRAO_LATERAL,
+    fontSize: FONT_SIZE_CARD,
+    paddingHorizontal: MARGIN_PADRAO_LATERAL,
+    paddingVertical: MARGIN_PADRAO_LATERAL,
+    borderWidth: 0,
+    marginLeft: MARGIN_ICON,
+    color: 'black',
+    paddingRight: MARGIN_ICON,
+  },
+  viewSelect: {
+    flexDirection: 'row',
+    marginTop: MARGIN_TOP
+  },
+  containerButtonPadraoDisable: {
+    backgroundColor: '#00BFFF',
+    width: BUTTON_WIDTH,
+    borderRadius: 5,
+    alignSelf: "center",
+    marginTop: MARGIN_TOP_MAIOR,
+    borderWidth: 0,
+    opacity: 0.5
+  },
+  containerButtonPadrao: {
+    backgroundColor: '#00BFFF',
+    width: BUTTON_WIDTH,
+    borderRadius: 5,
+    alignSelf: "center",
+    marginTop: MARGIN_TOP_MAIOR,
+    borderWidth: 0,
   },
 });
 

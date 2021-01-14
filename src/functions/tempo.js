@@ -46,3 +46,32 @@ export function time() {
   timeFormat = hora + ":" + minutos + ":" + segundos;
   return timeFormat;
 }
+
+export function timeParam(data) {
+
+  //data = new Date;
+  hora = '';
+  minutos = '';
+  segundos = '';
+
+  if (data.getMinutes() < 10) {
+    minutos = '0' + data.getMinutes();
+  } else {
+    minutos = data.getMinutes();
+  }
+
+  if (data.getHours() < 10) {
+    hora = '0' + data.getHours();
+  } else {
+    hora = data.getHours();
+  }
+
+  if (data.getSeconds() < 10) {
+    segundos = '0' + data.getSeconds();
+  } else {
+    segundos = data.getSeconds();
+  }
+
+  timeFormat = hora + ":" + minutos + ":" + segundos;
+  return timeFormat;
+}

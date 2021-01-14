@@ -6,21 +6,29 @@ import api from '../../services/api';
 import { SearchBar } from 'react-native-elements';
 import styles from './styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { date } from '../../functions/tempo';
-import { Dropdown } from 'react-native-material-dropdown-v2-fixed';
+import RNPickerSelect from 'react-native-picker-select';
+import { Picker } from '@react-native-picker/picker';
+import { date, timeParam } from '../../functions/tempo';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
+import * as tecnicoActions from './../../data/actions/tecnicoActions';
 
-const CriarEvento = ({ navigation }) => {
+const CriarEvento = ({ navigation, id_tecnico }) => {
 
   const [cooperados, setCooperados] = useState([]);
   const [cooperadosTodos, setCooperadosTodos] = useState([]);
   const [formularios, setFormularios] = useState([]);
-  const [formulario, setFormulario] = useState('');
+  const [formulario, setFormulario] = useState({ label: '', value: '' });
   const [projetos, setProjetos] = useState([]);
+  const [projeto, setProjeto] = useState({ label: '', value: '' });
   const [cooperadoImput, setCooperadoImput] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadingNovoProjeto, setLoadingNovoProjeto] = useState(false);
   const [listAtivo, setListAtivo] = useState(false);
   const [data, setData] = useState(new Date());
   const [showDate, setShowDate] = useState(false);
+  const [time, setTime] = useState(new Date());
+  const [showTime, setShowTime] = useState(false);
   const [coopSelect, setCoopSelect] = useState({});
 
   useEffect(() => {
@@ -43,9 +51,18 @@ const CriarEvento = ({ navigation }) => {
       //TRAZER TIPOS DE RELATÓRIO
       const responseFormularios = await api.get('api/evento/listar_formularios');
       setCooperados(responseCooperados.data.cooperados);
-      setFormularios(responseFormularios.data.formularios);
+      //
+      temp = [];
+      responseFormularios.data.formularios.map((formulario) => {
+        temp.push({ label: formulario.Titulo, value: formulario.id });
+      })
+      setFormularios(temp);
       setCooperadosTodos(responseCooperados.data.cooperados);
-      setProjetos(responseProjetos.data.projetos);
+      temp2 = [];
+      responseProjetos.data.projetos.map((projeto) => {
+        temp2.push({ label: projeto.nome, value: projeto.id });
+      })
+      setProjetos(temp2);
       setLoading(false);
       setListAtivo(true);
     }
@@ -59,7 +76,6 @@ const CriarEvento = ({ navigation }) => {
   }
 
   async function filtrarCooperado(inputCooperado) {
-    console.log(cooperados.length);
     var find = {};
     if (cooperadoImput.length <= inputCooperado.length && cooperados) {
       find = cooperados.filter(function (cooperadoItem) {
@@ -70,7 +86,6 @@ const CriarEvento = ({ navigation }) => {
         return cooperadoItem.nome.toLowerCase().startsWith(inputCooperado.toLowerCase());
       });
     }
-    console.log(find.length)
     setCooperados(find);
   }
 
@@ -78,7 +93,42 @@ const CriarEvento = ({ navigation }) => {
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || data;
     setShowDate(false);
+    setShowTime(true);
     setData(currentDate);
+  };
+
+  //ADICIONA A NOVA HORA 
+  const onChangeTime = (event, selectedTime) => {
+
+    const currentTime = selectedTime || time;
+    setShowTime(false);
+    setTime(currentTime);
+  };
+
+  //ADICIONA O FORMULARIO 
+  const onChangeFormulario = (selectedForm) => {
+    setFormulario({ label: selectedForm, value: selectedForm });
+  };
+
+  //ADICIONA O PROJETO 
+  const onChangeProjeto = (selectedProj) => {
+    setProjeto({ label: selectedProj, value: selectedProj });
+  };
+
+  //Registra evento 
+  const actionAplica = async () => {
+    temp = await api.get('api/evento/agendar_evento', {
+      DataSubmissao: data,
+      hora: time,
+      qualidade_id: coopSelect.id_qualidade,
+      tanque_id: coopSelect.id,
+      fomulario_id: formulario.value,
+      projeto_id: projeto.value,
+      tecnico_id: id_tecnico,
+      realizada: 0,
+    });
+
+    console.log(temp);
   };
 
   function renderCooperado(item) {
@@ -115,8 +165,6 @@ const CriarEvento = ({ navigation }) => {
   }
 
   function selectCoop(item) {
-    console.log('Selecionou!');
-    console.log(item);
     setListAtivo(false);
     setCoopSelect(item);
   }
@@ -170,39 +218,91 @@ const CriarEvento = ({ navigation }) => {
                 </View>
               </View>
 
-              <View>
-                <FontAwesomeIcon icon="clipboard-list" color="white" size={25} />
-                <Dropdown
-                  //containerStyle={{ marginLeft: scale(10), width: scale(300), height: moderateScale(50) }}
-                  label={"Selecione o tipo de visita"}
-                  value={formulario}
-                  useNativeDriver={true}
-                  //fontSize={moderateScale(14)}
-                  //labelFontSize={moderateScale(14)}
-                  //dropdownPosition={0}
-                  //overlayStyle={{ marginTop: moderateScale(3) }}
-                  data={formularios}
-                //itemTextStyle={{ fontSize: moderateScale(18), marginTop: 0 }}
-                //onChangeText={this.onChangeText}
+              <View style={styles.viewSelect}>
+                <RNPickerSelect
+                  placeholder={{
+                    label: 'Selecione o tipo de visita',
+                    value: 1,
+                  }}
+                  items={formularios}
+                  onValueChange={(value) => {
+                    onChangeFormulario(value);
+                  }}
+                  style={{
+                    inputAndroid: styles.inputAndroid,
+                    inputAndroidContainer: styles.containerDrop,
+                    iconContainer: styles.containerIcon,
+                  }}
+                  value={formulario.value}
+                  useNativeAndroidPickerStyle={false}
+                  textInputProps={{ underlineColor: '#00BFFF' }}
+                  Icon={() => {
+                    return <FontAwesomeIcon icon="clipboard-list" color='#00BFFF' size={25} />;
+                  }}
+                />
+              </View>
+
+              <View style={styles.viewSelect}>
+                <RNPickerSelect
+                  placeholder={{
+                    label: 'Selecione um projeto',
+                    value: 1,
+                  }}
+                  items={projetos}
+                  onValueChange={(value) => {
+                    onChangeProjeto(value);
+                  }}
+                  style={{
+                    inputAndroid: styles.inputAndroid,
+                    inputAndroidContainer: styles.containerDrop,
+                    iconContainer: styles.containerIcon,
+                  }}
+                  value={projeto.value}
+                  useNativeAndroidPickerStyle={false}
+                  textInputProps={{ underlineColor: '#00BFFF' }}
+                  Icon={() => {
+                    return <FontAwesomeIcon icon="pencil-ruler" color='#00BFFF' size={25} />;
+                  }}
                 />
               </View>
 
               <TouchableOpacity disabled={loading} onPress={() => setShowDate(true)}>
                 <View style={styles.viewCalendar}>
                   <FontAwesomeIcon style={{ alignSelf: 'center' }} icon="calendar" color='#00BFFF' size={25} />
-                  <Text allowFontScaling={false} style={styles.textDate}>{date(data)}</Text>
+                  <Text allowFontScaling={false} style={styles.textDate}>{date(data) + ' ' + timeParam(time)}</Text>
                 </View>
               </TouchableOpacity>
 
               {showDate &&
                 <DateTimePicker
                   value={data}
-                  mode={'datetime'}
+                  mode={'date'}
+                  display={'spinner'}
+                  is24Hour={true}
                   is24Hour={true}
                   display="default"
                   onChange={onChange}
                 />
               }
+              {showTime &&
+                <DateTimePicker
+                  value={data}
+                  mode={'time'}
+                  display={'spinner'}
+                  is24Hour={true}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChangeTime}
+                />
+              }
+              <Button
+                title="Aplicar"
+                type="outline"
+                onPress={actionAplica}
+                containerStyle={loadingNovoProjeto || formulario.label == '' ? styles.containerButtonPadraoDisable : styles.containerButtonPadrao}
+                titleStyle={styles.textButtonPadrao}
+                disabled={loadingNovoProjeto || formulario.label == ''}
+              />
             </View>
           )
       }
@@ -210,41 +310,51 @@ const CriarEvento = ({ navigation }) => {
   )
 }
 
-export default CriarEvento;
+const mapStateToProps = state => ({
+  id_tecnico: state.Tecnico.id
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ ...tecnicoActions }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(CriarEvento);
 
 
 
 /*
 
-<View>
-                <FontAwesomeIcon icon="clipboard-list" color="white" size={25} />
-                <Dropdown
-                  //containerStyle={{ marginLeft: scale(10), width: scale(300), height: moderateScale(50) }}
-                  label={"Teste"}
-                  value={relatorio}
-                  //fontSize={moderateScale(14)}
-                  //labelFontSize={moderateScale(14)}
-                  //dropdownPosition={0}
-                  //overlayStyle={{ marginTop: moderateScale(3) }}
-                  data={relatorios}
-                //itemTextStyle={{ fontSize: moderateScale(18), marginTop: 0 }}
-                //onChangeText={this.onChangeText}
-                />
-              </View>
-
-              <View>
-                <FontAwesomeIcon icon="pencil-ruler" color="white" size={25} />
-                <Dropdown
-                  //containerStyle={{ marginLeft: scale(10), width: scale(300), height: moderateScale(50) }}
-                  label={"Teste"}
-                  value={relatorio}
-                  //fontSize={moderateScale(14)}
-                  //labelFontSize={moderateScale(14)}
-                  //dropdownPosition={0}
-                  //overlayStyle={{ marginTop: moderateScale(3) }}
-                  data={relatorios}
-                //itemTextStyle={{ fontSize: moderateScale(18), marginTop: 0 }}
-                //onChangeText={this.onChangeText}
-                />
-              </View>
+items={formularios}
+                  placeholder={{
+                    label: 'Selecionar...',
+                    value: 1,
+                  }}
+                  onValueChange={(value) => {
+                    onChangeFormulario(value);
+                  }}
+                  value={formulario.value}
               */
+
+/*
+
+<RNPickerSelect
+    useNativeAndroidPickerStyle={false}
+    style={{
+      inputAndroid: styles.inputAndroid,
+      inputAndroidContainer: styles.containerDrop,
+      iconContainer: styles.containerIcon,
+    }}
+    items={formularios}
+    placeholder={{
+      label: 'Selecionar...',
+      value: 1,
+    }}
+    onValueChange={(value) => {
+      onChangeFormulario(value);
+    }}
+    value={formulario.value}
+    Icon={() => {
+      return <FontAwesomeIcon icon="clipboard-list" color='#00BFFF' size={25} />;
+    }}
+  />
+
+  */

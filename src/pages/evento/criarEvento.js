@@ -116,7 +116,7 @@ const CriarEvento = ({ navigation, id, tecnico }) => {
 
   //Registra evento 
   const actionAplica = async () => {
-    console.log(tecnico);
+    console.log(tecnicor);
 
     temp = await api.post('api/evento/agendar_evento', {
       DataSubmissao: data,

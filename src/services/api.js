@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import erroMessage from './../functions/errorMessage';
 
 const api = axios.create({
-  //baseURL: 'http://192.168.10.26:8000/', apigestaocooperados.selita.coop.br
+  //baseURL: 'http://192.168.10.26:8000/',
   baseURL: 'http://apigestaocooperados.selita.coop.br/',
   timeout: 10000,
   headers: { 'Content-Type': 'application/json' }
@@ -38,6 +38,7 @@ api.interceptors.request.use(
   async function (config) {
     const access_token = await AsyncStorage.getItem('@access_token');
     if (access_token) config.headers.Authorization = `Bearer ${access_token}`;
+    console.log(config);
     return config;
   },
   function (error) {

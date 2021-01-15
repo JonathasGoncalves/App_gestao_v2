@@ -7,13 +7,12 @@ import { SearchBar } from 'react-native-elements';
 import styles from './styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
-import { Picker } from '@react-native-picker/picker';
 import { date, timeParam } from '../../functions/tempo';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import * as tecnicoActions from './../../data/actions/tecnicoActions';
 
-const CriarEvento = ({ navigation, id_tecnico }) => {
+const CriarEvento = ({ navigation, id, tecnico }) => {
 
   const [cooperados, setCooperados] = useState([]);
   const [cooperadosTodos, setCooperadosTodos] = useState([]);
@@ -117,18 +116,20 @@ const CriarEvento = ({ navigation, id_tecnico }) => {
 
   //Registra evento 
   const actionAplica = async () => {
-    temp = await api.get('api/evento/agendar_evento', {
+    console.log(tecnico);
+
+    temp = await api.post('api/evento/agendar_evento', {
       DataSubmissao: data,
       hora: time,
-      qualidade_id: coopSelect.id_qualidade,
+      qualidade_id: coopSelect.qualidade_id,
       tanque_id: coopSelect.id,
       fomulario_id: formulario.value,
-      projeto_id: projeto.value,
-      tecnico_id: id_tecnico,
+      projeto_id: projeto.value || "",
+      tecnico_id: id,
       realizada: 0,
     });
 
-    console.log(temp);
+    //console.log(temp);
   };
 
   function renderCooperado(item) {
@@ -311,50 +312,11 @@ const CriarEvento = ({ navigation, id_tecnico }) => {
 }
 
 const mapStateToProps = state => ({
-  id_tecnico: state.Tecnico.id
+  id: state.Tecnico.id,
+  tecnico: state.Tecnico
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ ...tecnicoActions }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(CriarEvento);
-
-
-
-/*
-
-items={formularios}
-                  placeholder={{
-                    label: 'Selecionar...',
-                    value: 1,
-                  }}
-                  onValueChange={(value) => {
-                    onChangeFormulario(value);
-                  }}
-                  value={formulario.value}
-              */
-
-/*
-
-<RNPickerSelect
-    useNativeAndroidPickerStyle={false}
-    style={{
-      inputAndroid: styles.inputAndroid,
-      inputAndroidContainer: styles.containerDrop,
-      iconContainer: styles.containerIcon,
-    }}
-    items={formularios}
-    placeholder={{
-      label: 'Selecionar...',
-      value: 1,
-    }}
-    onValueChange={(value) => {
-      onChangeFormulario(value);
-    }}
-    value={formulario.value}
-    Icon={() => {
-      return <FontAwesomeIcon icon="clipboard-list" color='#00BFFF' size={25} />;
-    }}
-  />
-
-  */

@@ -101,7 +101,8 @@ const Login = ({ save_tecnico }) => {
 
       //RECUPERANDO USUÁRIO LOGADO E SALVANDO DO REDUX e ASYNCSTORAGE
       const responseTecnico = await api.get('api/tecnico/logged_tecnico');
-      save_tecnico(responseTecnico.name, responseTecnico.email, responseTecnico.id);
+      console.log(responseTecnico);
+      save_tecnico(responseTecnico.data.name, responseTecnico.data.email, responseTecnico.data.id);
     } catch (error) {
       console.log(error);
       setShowCancel(error.cancel);

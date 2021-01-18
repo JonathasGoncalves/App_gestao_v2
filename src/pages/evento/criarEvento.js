@@ -11,8 +11,9 @@ import { date, timeParam } from '../../functions/tempo';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import * as tecnicoActions from './../../data/actions/tecnicoActions';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
-const CriarEvento = ({ navigation, id, tecnico }) => {
+const CriarEvento = ({ navigation, id_tecnico }) => {
 
   const [cooperados, setCooperados] = useState([]);
   const [cooperadosTodos, setCooperadosTodos] = useState([]);
@@ -22,6 +23,7 @@ const CriarEvento = ({ navigation, id, tecnico }) => {
   const [projeto, setProjeto] = useState({ label: '', value: '' });
   const [cooperadoImput, setCooperadoImput] = useState('');
   const [loading, setLoading] = useState(true);
+  const [aplicando, setAplicando] = useState(false);
   const [loadingNovoProjeto, setLoadingNovoProjeto] = useState(false);
   const [listAtivo, setListAtivo] = useState(false);
   const [data, setData] = useState(new Date());
@@ -29,6 +31,8 @@ const CriarEvento = ({ navigation, id, tecnico }) => {
   const [time, setTime] = useState(new Date());
   const [showTime, setShowTime] = useState(false);
   const [coopSelect, setCoopSelect] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertProps, setAlertProps] = useState({});
 
   useEffect(() => {
     //ADICIONANDO BOTÃO DE VOLTAR
@@ -93,15 +97,14 @@ const CriarEvento = ({ navigation, id, tecnico }) => {
     const currentDate = selectedDate || data;
     setShowDate(false);
     setShowTime(true);
-    setData(currentDate);
+    setData(date(currentDate));
   };
 
   //ADICIONA A NOVA HORA 
   const onChangeTime = (event, selectedTime) => {
-
     const currentTime = selectedTime || time;
     setShowTime(false);
-    setTime(currentTime);
+    setTime(timeParam(currentTime));
   };
 
   //ADICIONA O FORMULARIO 
@@ -111,26 +114,38 @@ const CriarEvento = ({ navigation, id, tecnico }) => {
 
   //ADICIONA O PROJETO 
   const onChangeProjeto = (selectedProj) => {
+    console.log(selectedProj);
+    console.log('selectedForm console.log(selectedForm);');
     setProjeto({ label: selectedProj, value: selectedProj });
   };
 
   //Registra evento 
   const actionAplica = async () => {
-    console.log(tecnicor);
 
+    setAplicando(true);
     temp = await api.post('api/evento/agendar_evento', {
-      DataSubmissao: data,
-      hora: time,
-      qualidade_id: coopSelect.qualidade_id,
+      DataSubmissao: date(data),
+      hora: timeParam(time),
+      qualidade_id: "",
       tanque_id: coopSelect.id,
       fomulario_id: formulario.value,
-      projeto_id: projeto.value || "",
-      tecnico_id: id,
+      projeto_id: projeto.value || 999, //id projeto null
+      tecnico_id: id_tecnico,
       realizada: 0,
     });
 
-    //console.log(temp);
+    errorMsg = {
+      title: 'Criar evento',
+      msg: 'Evento agendado com sucesso!',
+      confirm: 'Continuar',
+      cancel: ''
+    }
+
+    setAlertProps(errorMsg);
+    setAplicando(false);
+    setShowAlert(true);
   };
+
 
   function renderCooperado(item) {
     return (
@@ -153,12 +168,6 @@ const CriarEvento = ({ navigation, id, tecnico }) => {
             <Text style={styles.textInput}>{item.tanque}</Text>
             <Text style={styles.textLabel}>Latão:</Text>
             <Text style={styles.textInput}>{item.latao}</Text>
-          </View>
-          <View style={styles.viewRow}>
-            <Text style={styles.textLabel}>CBT:</Text>
-            <Text style={styles.textInput}>{item.cbt}</Text>
-            <Text style={styles.textLabel}>CCS:</Text>
-            <Text style={styles.textInput}>{item.ccs}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -191,7 +200,7 @@ const CriarEvento = ({ navigation, id, tecnico }) => {
           />
         </View>
       ) : (
-            <View>
+            <View style={aplicando ? { opacity: 0.5 } : { opacity: 1 }}>
               <View style={styles.viewCard}>
                 <View style={styles.viewColunn}>
                   <View style={styles.viewRow}>
@@ -223,12 +232,10 @@ const CriarEvento = ({ navigation, id, tecnico }) => {
                 <RNPickerSelect
                   placeholder={{
                     label: 'Selecione o tipo de visita',
-                    value: 1,
+                    value: 0,
                   }}
                   items={formularios}
-                  onValueChange={(value) => {
-                    onChangeFormulario(value);
-                  }}
+                  onValueChange={(value) => onChangeFormulario(value)}
                   style={{
                     inputAndroid: styles.inputAndroid,
                     inputAndroidContainer: styles.containerDrop,
@@ -247,12 +254,10 @@ const CriarEvento = ({ navigation, id, tecnico }) => {
                 <RNPickerSelect
                   placeholder={{
                     label: 'Selecione um projeto',
-                    value: 1,
+                    value: 0,
                   }}
                   items={projetos}
-                  onValueChange={(value) => {
-                    onChangeProjeto(value);
-                  }}
+                  onValueChange={(value) => onChangeProjeto(value)}
                   style={{
                     inputAndroid: styles.inputAndroid,
                     inputAndroidContainer: styles.containerDrop,
@@ -304,6 +309,30 @@ const CriarEvento = ({ navigation, id, tecnico }) => {
                 titleStyle={styles.textButtonPadrao}
                 disabled={loadingNovoProjeto || formulario.label == ''}
               />
+
+              <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title={alertProps.title}
+                message={alertProps.msg}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={false}
+                showConfirmButton={true}
+                cancelText={alertProps.cancel}
+                confirmText={alertProps.confirm}
+                confirmButtonColor="#DD6B55"
+                onCancelPressed={() => {
+                  navigation.navigate('Agenda');
+                }}
+                onConfirmPressed={() => {
+                  navigation.navigate('Agenda');
+                }}
+              />
+
+              {aplicando &&
+                <ActivityIndicator size='large' color='#00BFFF' style={{ marginTop: '50%', position: "absolute", alignSelf: "center" }} />
+              }
             </View>
           )
       }
@@ -312,8 +341,7 @@ const CriarEvento = ({ navigation, id, tecnico }) => {
 }
 
 const mapStateToProps = state => ({
-  id: state.Tecnico.id,
-  tecnico: state.Tecnico
+  id_tecnico: state.Tecnico.id
 });
 
 const mapDispatchToProps = dispatch =>

@@ -31,6 +31,7 @@ function AgendaIndex() {
       <CreateMainStack.Screen
         name="Agenda"
         component={AgendaScreen}
+        options={{ unmountOnBlur: true }}
         options={{
           title: 'Agenda',
           headerStyle: {
@@ -102,6 +103,7 @@ function MainDrawer() {
       <CreateMainDrawer.Screen
         name="Index"
         component={AgendaIndex}
+        options={{ unmountOnBlur: true }}
       />
       <CreateMainDrawer.Screen
         name="Relatorio"

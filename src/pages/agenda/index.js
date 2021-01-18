@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import * as tecnicoActions from './../../data/actions/tecnicoActions';
 import { View, Text, TouchableOpacity } from 'react-native';
-import api from '../../services/api';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { Button } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +10,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { Agenda } from 'react-native-calendars';
 import { LocaleConfig } from 'react-native-calendars';
 import styles from './styles';
+import api from './../../services/api';
+import { date } from '../../functions/tempo';
 
 LocaleConfig.locales['br'] = {
   monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembrp', 'Dezembro'],
@@ -28,6 +29,7 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
   const [alertProps, setAlertProps] = useState({});
   const [showCancel, setShowCancel] = useState(true);
   const [items, setItems] = useState({});
+  const [data, setData] = useState(new Date());
 
   useEffect(() => {
 
@@ -53,6 +55,12 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
       ),
     });
 
+    async function iniciar_agenda() {
+      buscar_eventos("");
+    }
+
+    iniciar_agenda();
+
   }, [])
 
   async function teste() {
@@ -73,48 +81,25 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
     clear_tecnico();
   }
 
-  function loadItems(day) {
-    temp = {};
-    setTimeout(() => {
-      for (let i = -1; i < 5; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-        const strTime = timeToString(time);
-        if (!temp[strTime]) {
-          temp[strTime] = [];
-          const numItems = Math.floor(Math.random() * 3 + 1);
-          for (let j = 0; j < numItems; j++) {
-            temp[strTime].push({
-              name: 'Item for ' + strTime + ' #' + j,
-              height: Math.max(50, Math.floor(Math.random() * 150))
-            });
-          }
-        }
-      }
-      const newItems = {};
-      Object.keys(temp).forEach(key => { newItems[key] = temp[key]; });
-      setItems(temp);
-    }, 1000);
-  }
-
   function renderItem(item) {
-    console.log(item);
     return (
-      <View>
-        <Text>{item.name}</Text>
+      <View style={{ marginTop: 40, borderWidth: 0.5, padding: 10, marginRight: 10 }}>
+        <Text>{item.tanque_id}</Text>
+        <Text>{item.data}</Text>
       </View>
     );
   }
 
   function renderEmptyDate() {
     return (
-      <View style={styles.emptyDate}>
+      <View style={{ marginTop: 40, borderWidth: 0.5, padding: 10, marginRight: 10 }}>
         <Text>This is empty date!</Text>
       </View>
     );
   }
 
   function rowHasChanged(r1, r2) {
-    console.log(items);
+    console.log('rowHasChanged');
     return r1.name !== r2.name;
   }
 
@@ -123,13 +108,76 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
     return date.toISOString().split('T')[0];
   }
 
+  function timeToString(time) {
+    const date = new Date(time);
+    return date.toISOString().split('T')[0];
+  }
+
+  async function buscar_eventos(day) {
+    //load inicial
+    data_nova = "";
+    timestamp = "";
+
+    if (day == "") {
+      data_temp = new Date();
+      timestamp = data_temp.getTime();
+      data_nova = timeToString(timestamp - 10 * 24 * 60 * 60 * 1000);
+    } else {
+      timestamp = day.timestamp;
+      data_nova = timeToString(day.timestamp - 10 * 24 * 60 * 60 * 1000);
+    }
+
+    console.log(data_nova);
+
+    const eventos = await api.post('api/evento/eventos_por_data', {
+      data: data_nova
+    })
+
+    console.log(eventos.data);
+
+    //copia do state com os itens
+    itensCop = [];
+
+    for (let i = -6; i < 84; i++) {
+      //gera a data relativa
+      data_nova = timeToString(timestamp + i * 24 * 60 * 60 * 1000);
+      //inicializaa nova pisição do array de eventos
+      itensCop[data_nova] = [];
+      //percorre response com os eventos encontrados
+      if (eventos.data.eventos[data_nova]) {
+        for (let j = 0; j < eventos.data.eventos[data_nova].length; j++) {
+          //adiciona o evento na sua respectiva chave de data
+          itensCop[data_nova].push(eventos.data.eventos[data_nova][j]);
+        }
+      }
+    }
+    const newItems = {};
+    temp = Object.keys(itensCop);
+    console.log(temp);
+    Object.keys(itensCop).forEach(key => { newItems[key] = itensCop[key] });
+    setItems(itensCop);
+  }
+
+
   const adicionarEvento = async () => {
     navigation.navigate('Criar Evento');
   }
 
+  function rowHasChanged(r1, r2) {
+    return r1.name !== r2.name;
+  }
+
   return (
     <View style={{ flex: 1 }}>
-      <Agenda />
+      <Agenda
+        items={items}
+        renderItem={(item) => renderItem(item)}
+        renderEmptyDate={() => renderEmptyDate()}
+        loadItemsForMonth={(day) => buscar_eventos(day)}
+        onDayChange={(day) => buscar_eventos(day)}
+        onDayPress={(day) => buscar_eventos(day)}
+        rowHasChanged={(r1, r2) => rowHasChanged(r1, r2)}
+      />
 
       <Button
         type="outline"

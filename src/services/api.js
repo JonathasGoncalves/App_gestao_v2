@@ -38,7 +38,7 @@ api.interceptors.request.use(
   async function (config) {
     const access_token = await AsyncStorage.getItem('@access_token');
     if (access_token) config.headers.Authorization = `Bearer ${access_token}`;
-    console.log(config);
+    //console.log(config);
     return config;
   },
   function (error) {
@@ -70,7 +70,6 @@ api.interceptors.response.use(async function (response) {
   //OBJ COM A RESPORTA PERSONALIZADA
   errorMsg = {};
   errorJson = error.toJSON();
-  console.log(error.response);
   const access_token = await AsyncStorage.getItem('@access_token');
   if (errorJson.code == 'ECONNABORTED') {
     //TIMEOUT ERROR

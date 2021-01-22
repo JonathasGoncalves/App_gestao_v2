@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import * as tecnicoActions from './../../data/actions/tecnicoActions';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { CommonActions } from '@react-navigation/native';
 
 const CriarEvento = ({ navigation, id_tecnico }) => {
 
@@ -179,6 +180,17 @@ const CriarEvento = ({ navigation, id_tecnico }) => {
     setCoopSelect(item);
   }
 
+  function voltar() {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes: [
+          { name: 'Agenda' },
+        ],
+      })
+    );
+  }
+
   return (
     <View>
       {loading ? (
@@ -323,10 +335,10 @@ const CriarEvento = ({ navigation, id_tecnico }) => {
                 confirmText={alertProps.confirm}
                 confirmButtonColor="#DD6B55"
                 onCancelPressed={() => {
-                  navigation.navigate('Agenda');
+                  voltar();
                 }}
                 onConfirmPressed={() => {
-                  navigation.navigate('Agenda');
+                  voltar();
                 }}
               />
 

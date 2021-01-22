@@ -5,6 +5,7 @@ import Relatorio from './../pages/relatorios/index';
 import { PixelRatio } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import CriarEvento from '../pages/evento/criarEvento';
+import Formulario from '../pages/formulario/index';
 
 var FONT_SIZE_TITULOS = 20;
 var FONT_SIZE_TEXT = 18;
@@ -31,12 +32,12 @@ function AgendaIndex() {
       <CreateMainStack.Screen
         name="Agenda"
         component={AgendaScreen}
-        options={{ unmountOnBlur: true }}
         options={{
           title: 'Agenda',
           headerStyle: {
             backgroundColor: '#00BFFF',
           },
+          unmountOnBlur: true,
           headerTitleAlign: "center",
           headerTintColor: '#fff',
           headerTitleStyle: {
@@ -50,6 +51,22 @@ function AgendaIndex() {
         component={CriarEvento}
         options={{
           title: 'Criar Evento',
+          headerStyle: {
+            backgroundColor: '#00BFFF',
+          },
+          headerTitleAlign: "center",
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontSize: FONT_SIZE_TEXT
+          },
+        }}
+      />
+
+      <CreateMainStack.Screen
+        name="Formulario"
+        component={Formulario}
+        options={{
+          title: 'Formulário',
           headerStyle: {
             backgroundColor: '#00BFFF',
           },

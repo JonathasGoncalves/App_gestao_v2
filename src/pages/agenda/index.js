@@ -7,8 +7,7 @@ import AwesomeAlert from 'react-native-awesome-alerts';
 import { Button } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { Agenda } from 'react-native-calendars';
-import { LocaleConfig } from 'react-native-calendars';
+import { Agenda, LocaleConfig } from 'react-native-calendars';
 import styles from './styles';
 import api from './../../services/api';
 import { date } from '../../functions/tempo';
@@ -81,25 +80,86 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
     clear_tecnico();
   }
 
+  //ACTION CLIQUE DO ITEM DA AGENDA
+  async function item_agenda_clique(item) {
+
+    errorMsg = {};
+    //verificar se o item já foi submetido
+    if (item.realizada == 1) {
+      errorMsg = {
+        title: 'Evento finalizado!',
+        msg: 'Este evento já foi finalizado"',
+        confirm: 'Continuar',
+        cancel: ''
+      }
+      setShowCancel(false);
+      setAlertProps(errorMsg);
+      setShowAlert(true);
+    } else if (item.data < new Date()) {
+      //verificar se o item esta vencido
+      errorMsg = {
+        title: 'Data inválida',
+        msg: 'Este evento não é mais válido"',
+        confirm: 'Continuar',
+        cancel: ''
+      }
+      setShowCancel(false);
+      setAlertProps(errorMsg);
+      setShowAlert(true);
+    } else {
+      //navegar para realizar submissao mandando o id do evento selecionado
+      navigation.navigate('Formulario', {
+        id_evento: item.id,
+      });
+    }
+  }
+
   function renderItem(item) {
+    //BUSCANDO APENAS OS 2 PRIMEIROS NOMES DO COOPERADO
+    nome_formatado_array = item.tanque.Cooperado.nome.split(" ", 2);
+    nome_formatado = nome_formatado_array[0] + ' ' + nome_formatado_array[1];
     return (
-      <View style={{ marginTop: 40, borderWidth: 0.5, padding: 10, marginRight: 10 }}>
-        <Text>{item.tanque_id}</Text>
-        <Text>{item.data}</Text>
-      </View>
+      <TouchableOpacity onPress={() => item_agenda_clique(item)}>
+        <View style={styles.renderItem}>
+          <Text style={styles.textLabel}>{item.formulario.titulo}</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.textLabel}>Cooperado:</Text>
+            <Text style={styles.textValue}>{nome_formatado}</Text>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.textLabel}>Municipio:</Text>
+            <Text style={styles.textValue}>{item.tanque.Cooperado.municipio}</Text>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.textLabel}>Tanque:</Text>
+            <Text style={styles.textValue}>{item.tanque.tanque}</Text>
+            <Text style={styles.textLabel}>Latao:</Text>
+            <Text style={styles.textValue}>{item.tanque.latao}</Text>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.textLabel}>Técnico:</Text>
+            <Text style={styles.textValue}>{item.tecnico.nome}</Text>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.textLabel}>Data:</Text>
+            <Text style={styles.textValue}>{item.data}</Text>
+            <Text style={styles.textValue}>{item.hora}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+
     );
   }
 
   function renderEmptyDate() {
     return (
-      <View style={{ marginTop: 40, borderWidth: 0.5, padding: 10, marginRight: 10 }}>
-        <Text>This is empty date!</Text>
+      <View style={styles.renderItem}>
+        <Text style={styles.textValue}>Sem eventos agendados</Text>
       </View>
     );
   }
 
   function rowHasChanged(r1, r2) {
-    console.log('rowHasChanged');
     return r1.name !== r2.name;
   }
 
@@ -126,14 +186,9 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
       timestamp = day.timestamp;
       data_nova = timeToString(day.timestamp - 10 * 24 * 60 * 60 * 1000);
     }
-
-    console.log(data_nova);
-
     const eventos = await api.post('api/evento/eventos_por_data', {
       data: data_nova
     })
-
-    console.log(eventos.data);
 
     //copia do state com os itens
     itensCop = [];
@@ -153,7 +208,6 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
     }
     const newItems = {};
     temp = Object.keys(itensCop);
-    console.log(temp);
     Object.keys(itensCop).forEach(key => { newItems[key] = itensCop[key] });
     setItems(itensCop);
   }
@@ -188,6 +242,10 @@ const AgendaScreen = ({ clear_tecnico, navigation }) => {
           <FontAwesomeIcon style={{ alignSelf: 'center' }} icon="plus" color="white" size={25} />
         }
       />
+
+
+
+
     </View>
   );
 }

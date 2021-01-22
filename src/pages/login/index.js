@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import * as tecnicoActions from './../../data/actions/tecnicoActions';
 import { useEffect, useState } from 'react';
-import api from './../../services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, TextInput, Keyboard, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-elements';

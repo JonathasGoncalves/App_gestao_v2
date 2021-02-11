@@ -13,6 +13,7 @@ import { Form, Item, Input, Label } from 'native-base';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import * as Updates from 'expo-updates';
 import NetInfo from "@react-native-community/netinfo";
+import api from '../../services/api';
 
 const Login = ({ save_tecnico }) => {
 

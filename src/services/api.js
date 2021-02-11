@@ -68,6 +68,7 @@ api.interceptors.response.use(async function (response) {
   return response;
 }, async function (error) {
   //OBJ COM A RESPORTA PERSONALIZADA
+  console.log(error);
   errorMsg = {};
   errorJson = error.toJSON();
   const access_token = await AsyncStorage.getItem('@access_token');
